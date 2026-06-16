@@ -32,11 +32,17 @@ if st.button("Research"):
             st.subheader("Research Plan")
             st.markdown(data["plan"])
 
+            st.subheader("Sources")
+
+            for source in data["sources"]:
+                st.write(source)
+
         with col2:
-            st.metric(
-                "Execution Time",
-                f"{data['execution_time']} sec"
-            )
+            if "execution_time" in data:
+                st.metric(
+                    "Execution Time",
+                    f"{data['execution_time']} sec"
+                )
 
         st.divider()
 

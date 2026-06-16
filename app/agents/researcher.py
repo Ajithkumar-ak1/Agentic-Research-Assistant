@@ -1,18 +1,46 @@
-from app.tools.tavily_tool import search_web
+from app.services.llm import llm
 
-def conduct_research(query: str):
 
-    results = search_web(query)
+def synthesize_research(
+    query,
+    web_results,
+    pdf_results
+):
 
-    context = []
+    context = ""
 
-    for r in results:
-        context.append(
-            f"""
-            Title: {r['title']}
-            Content: {r['content']}
-            URL: {r['url']}
-            """
-        )
+    for item in web_results:
 
-    return "\n\n".join(context)
+        context += f"""
+        WEB SOURCE
+
+        Title:
+        {item['title']}
+
+        Content:
+        {item['content']}
+        """
+
+    for item in pdf_results:
+
+        context += f"""
+        PDF SOURCE
+
+        Title:
+        {item['title']}
+
+        Content:
+        {item['content']}
+        """
+
+    prompt = f"""
+    Query:
+    {query}
+
+    Sources:
+    {context}
+
+    Create structured findings.
+    """
+
+    return llm.invoke(prompt).content

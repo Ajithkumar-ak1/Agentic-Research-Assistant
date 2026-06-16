@@ -15,8 +15,12 @@ async def research(req: ResearchRequest):
         {
             "query": req.query,
             "plan": "",
+            "use_web_search": False,
+            "use_pdf_search": False,
             "web_results": [],
+            "pdf_results": [],
             "findings": "",
+            "sources": [],
             "report": ""
         }
     )
@@ -26,6 +30,7 @@ async def research(req: ResearchRequest):
     return {
         "query": req.query,
         "plan": result["plan"],
+        "sources": result["sources"],
         "report": result["report"],
         "execution_time": execution_time
     }

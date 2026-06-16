@@ -1,13 +1,17 @@
 from app.services.llm import llm
 
-def generate_report(query, research):
+
+def generate_report(
+    query,
+    findings
+):
 
     prompt = f"""
-    Research Query:
+    Query:
     {query}
 
     Findings:
-    {research}
+    {findings}
 
     Create a professional report.
 
@@ -15,9 +19,8 @@ def generate_report(query, research):
 
     1. Executive Summary
     2. Key Findings
-    3. Trends
-    4. Recommendations
-    5. Sources
+    3. Recommendations
+    4. Conclusion
     """
 
     return llm.invoke(prompt).content
