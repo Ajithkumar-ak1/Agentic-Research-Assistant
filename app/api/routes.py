@@ -21,6 +21,8 @@ async def research(req: ResearchRequest):
             "pdf_results": [],
             "findings": "",
             "sources": [],
+            "trace": [],
+            "evidence": "",
             "report": ""
         }
     )
@@ -28,9 +30,9 @@ async def research(req: ResearchRequest):
     execution_time = round(time.time() - start, 2)
 
     return {
-        "query": req.query,
-        "plan": result["plan"],
-        "sources": result["sources"],
-        "report": result["report"],
-        "execution_time": execution_time
-    }
+    "query": req.query,
+    "plan": result["plan"],
+    "trace": result["trace"],   
+    "report": result["report"],
+    "execution_time": execution_time
+}

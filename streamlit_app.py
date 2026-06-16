@@ -1,50 +1,79 @@
 import streamlit as st
 import requests
 
-API_URL = "http://localhost:8000/research"
+API_URL = "http://127.0.0.1:8000/research"
 
 st.set_page_config(
     page_title="Agentic Research Assistant",
+    page_icon="🔍",
     layout="wide"
 )
 
 st.title("🔍 Agentic Research Assistant")
 
 query = st.text_area(
-    "Enter Research Query",
-    height=150
+    "Enter your research question",
+    height=120
 )
 
 if st.button("Research"):
 
-    with st.spinner("Agents are researching..."):
+    if not query.strip():
+        st.warning("Please enter a question.")
+        st.stop()
+
+    with st.spinner("Researching..."):
 
         response = requests.post(
             API_URL,
             json={"query": query}
         )
 
+        if response.status_code != 200:
+            st.error(
+                f"API Error: {response.status_code}"
+            )
+
+            st.code(response.text)
+            st.stop()
+
         data = response.json()
 
-        col1, col2 = st.columns(2)
+    # ---------------------------
+    # Research Plan
+    # ---------------------------
 
-        with col1:
-            st.subheader("Research Plan")
-            st.markdown(data["plan"])
+    st.subheader("📋 Research Plan")
+    st.markdown(data.get("plan", "No plan generated"))
 
-            st.subheader("Sources")
+    # ---------------------------
+    # Agent Workflow
+    # ---------------------------
 
-            for source in data["sources"]:
-                st.write(source)
+    st.subheader("🤖 Agent Execution Trace")
 
-        with col2:
-            if "execution_time" in data:
-                st.metric(
-                    "Execution Time",
-                    f"{data['execution_time']} sec"
-                )
+    for step in data.get("trace", []):
+        st.markdown(f"✅ {step}")
 
-        st.divider()
+    # ---------------------------
+    # Execution Time
+    # ---------------------------
 
-        st.subheader("Final Report")
-        st.markdown(data["report"])
+    if "execution_time" in data:
+        st.metric(
+            "Execution Time",
+            f"{data['execution_time']} sec"
+        )
+
+    # ---------------------------
+    # Final Report
+    # ---------------------------
+
+    st.subheader("📄 Final Report")
+
+    st.markdown(
+        data.get(
+            "report",
+            "No report generated."
+        )
+    )

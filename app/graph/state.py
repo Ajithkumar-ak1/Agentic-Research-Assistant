@@ -14,4 +14,7 @@ class ResearchState(TypedDict):
 
     sources: List[Dict]
 
+    trace: list[str]
+    
+    evidence: str
     report: str
